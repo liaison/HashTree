@@ -9,4 +9,8 @@ Hash table is a powerful data structure, since it provides a random acess in con
 
 As to the search tree, we place the elements in the right order in O(logN) for each insertion, and the benefit is that we could have a constant time for the operations get_min / get_max.
 
+It would be useful and interesting to have these two data structures combined.
+
+We could regard the combined data structure as a versatile container providing two quick ways to retrieve the elements, i.e. random_acess, given a key; get_min/get_max among the values of all elements.
+
 
