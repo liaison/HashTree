@@ -31,13 +31,13 @@ class HashedTree
 
 private:
     // container related types
-	typedef boost::unordered_map<size_t, ValueType> container_t;
-	typedef typename container_t::iterator   container_iterator_t;
+    typedef boost::unordered_map<size_t, ValueType> container_t;
+    typedef typename container_t::iterator   container_iterator_t;
     typedef typename container_t::value_type container_entry_t;
 
     // container index related types
     typedef typename boost::intrusive::rbtree<ValueType> container_sorted_index_t;
-    typedef typename container_sorted_index_t::const_iterator const_node_ptr; 
+    typedef typename container_sorted_index_t::const_iterator const_node_ref; 
 
 private:
 
