@@ -1,4 +1,4 @@
-# HashTree
+# HashedTree
 A data structure that combines the hash table and the search tree, to have both of their advantages.
 i.e. 
  - random acccess in O(1) of hash table.
