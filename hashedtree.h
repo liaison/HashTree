@@ -41,7 +41,7 @@ private:
 private:
 
     //! The container for all elements, which is indexed by the key.
-	container_t _container;
+    container_t _container;
 
     //! The sorted indices based on value of each element,
     // which allows us to have a constant time access on the minimal element.
@@ -56,7 +56,7 @@ private:
 
 public:
     HashedTree(const ValueType& iNullValue)
-        : _nextKeyValue(1),  // ID=0 is reserved for the null value.
+        : _nextKeyValue(1),  // _id = 0 is reserved for the null value.
           _nullValue(iNullValue)
     {}
 
@@ -69,8 +69,8 @@ public:
      *  \brief add a new entry into the container,
      *  \return the key associated with the newly added entry.
      */
-	size_t add(const ValueType& iNewElem)
-	{
+    size_t add(const ValueType& iNewElem)
+    {
         std::pair<container_iterator_t, bool> aRet =
             _container.insert(container_entry_t(_nextKeyValue, iNewElem));
 
@@ -81,8 +81,8 @@ public:
         (aRet.first)->second._id = _nextKeyValue;
 
         // Return the newly-created timer ID and increment the key value.
-		return _nextKeyValue ++;
-	}
+        return _nextKeyValue ++;
+    }
 
     /**
      * \brief Find the value that is associated with the specified key.
@@ -103,14 +103,14 @@ public:
      * \return if there is no value found that is associated with the key,
      *   a null value would be returned.
      */
-	ValueType remove(uint64_t iKey)
-	{
+    ValueType remove(uint64_t iKey)
+    {
         container_iterator_t aIter = _container.find(iKey);
 
-		if (aIter == _container.end()) {
+        if (aIter == _container.end()) {
             // Did not find the specified timer, return a empty timer.
-			return _nullValue;
-		} else {
+            return _nullValue;
+        } else {
             // Retrieve the associated object before removing it.
             ValueType aRet = (aIter->second);
  
@@ -118,9 +118,9 @@ public:
             _container_quick_view.erase(aIter->second);
             _container.erase(aIter);
 
-			return aRet;
-		}
-	}
+            return aRet;
+        }
+    }
 
     /**
      *  \brief return the value that is at the head/top of the container,

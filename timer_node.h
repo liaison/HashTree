@@ -7,6 +7,11 @@
 
 using namespace boost::intrusive;
 
+/**
+ *  The customized value type provided by user should inherit from both
+ *   the base class "hashed_tree_entry_t" to have the _id attribute,
+ *   and the instrusive base class to fit into the boost intrusive container.
+ */
 struct timer_node_t : public hashed_tree_entry_t,
                       public set_base_hook<optimize_size<true> >
 {
