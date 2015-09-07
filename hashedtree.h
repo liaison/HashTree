@@ -2,7 +2,6 @@
 #define _HASHED_TREE_H_
 
 #include <utility>
-#include <stdexcept>
 
 #include <boost/tuple/tuple.hpp>
 #include <boost/unordered_map.hpp>
@@ -52,13 +51,18 @@ private:
 
     size_t _nextKeyValue;
 
+    //! Null value.
+    ValueType _nullValue;
+
 public:
-    HashedTree() : _nextKeyValue(1)
+    HashedTree(const ValueType& iNullValue)
+        : _nextKeyValue(1),  // ID=0 is reserved for the null value.
+          _nullValue(iNullValue)
     {}
 
-	bool empty(void) const { return _container.empty(); }
+    bool empty(void) const { return _container.empty(); }
 
-	size_t size(void) const { return _container.size(); }
+    size_t size(void) const { return _container.size(); }
 
 
     /**
@@ -70,13 +74,94 @@ public:
         std::pair<container_iterator_t, bool> aRet =
             _container.insert(container_entry_t(_nextKeyValue, iNewElem));
 
+        // put the new node into the quick view, so that it would be ordered.
         _container_quick_view.insert_equal((aRet.first)->second);
+
+        // keep the _id in the value for the reverse query.
+        (aRet.first)->second._id = _nextKeyValue;
 
         // Return the newly-created timer ID and increment the key value.
 		return _nextKeyValue ++;
 	}
 
+    /**
+     * \brief Find the value that is associated with the specified key.
+     * \return a NullValue would be returned if no value is found.
+     */
+    const ValueType & find(uint64_t iKey)
+    {
+        container_iterator_t aIter = _container.find(iKey);
+        if(aIter == _container.end()){
+            return _nullValue;
+        } else {
+            return aIter->second;
+        }
+    }
+
+    /**
+     * \brief Remove the entry from both the container and the quick view.
+     * \return if there is no value found that is associated with the key,
+     *   a null value would be returned.
+     */
+	ValueType remove(uint64_t iKey)
+	{
+        container_iterator_t aIter = _container.find(iKey);
+
+		if (aIter == _container.end()) {
+            // Did not find the specified timer, return a empty timer.
+			return _nullValue;
+		} else {
+            // Retrieve the associated object before removing it.
+            ValueType aRet = (aIter->second);
+ 
+            // Remove the timer from the both the quick view and the container.
+            _container_quick_view.erase(aIter->second);
+            _container.erase(aIter);
+
+			return aRet;
+		}
+	}
+
+    /**
+     *  \brief return the value that is at the head/top of the container,
+     *    according to the order of values in the container.
+     *  \return a NULL value is returned if the container is empty.
+     *
+     *  Note: The values are ordered in the ascendent order.
+     */
+    const ValueType& top()
+    {
+        const_node_ref aTopValue = _container_quick_view.begin();
+        if(aTopValue == _container_quick_view.end())
+            return _nullValue;
+        else
+            return (*aTopValue);
+    }
+
+    /**
+     * \brief pop the top value in the container.
+     * \return if the container is empty, a null value would be returned.
+     */
+    ValueType pop()
+    {
+        const_node_ref aTopValuePtr = _container_quick_view.begin();
+        if(aTopValuePtr == _container_quick_view.end()) {
+            return _nullValue;
+        } else {
+            // make a copy of the value to return, before removing.
+            ValueType aValueCopy(*aTopValuePtr);
+
+            // remove the value from both the container and the quick view.
+            _container_quick_view.erase(aTopValuePtr);
+            _container.erase(aTopValuePtr->_id);
+
+            return aValueCopy;
+        }
+    }
+
 };
+
+
 
 
 #endif /* _HASHED_TREE_H_ */
