@@ -58,7 +58,9 @@ public:
     HashedTree(const ValueType& iNullValue)
         : _nextKeyValue(1),  // _id = 0 is reserved for the null value.
           _nullValue(iNullValue)
-    {}
+    {
+        _nullValue._id = 0;
+    }
 
     bool empty(void) const { return _container.empty(); }
 
